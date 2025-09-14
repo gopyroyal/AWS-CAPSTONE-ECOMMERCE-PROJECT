@@ -1,0 +1,13 @@
+{
+  "name": "ecommerce-backend",
+  "version": "1.0.0",
+  "description": "Simple Express API for the capstone",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "health": "node -e \"require('./server'); console.log('ok')\""
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
