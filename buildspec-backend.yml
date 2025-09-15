@@ -1,9 +1,10 @@
+# buildspec-backend.yml (at repo root)
 version: 0.2
 
 phases:
   pre_build:
     commands:
-      - echo "Logging in to Amazon ECR..."
+      - echo Logging in to Amazon ECR...
       - AWS_REGION=${AWS_REGION:-${AWS_DEFAULT_REGION}}
       - ACC=$(aws sts get-caller-identity --query Account --output text)
       - REPO=ecommerce-backend
@@ -12,12 +13,14 @@ phases:
           | docker login --username AWS --password-stdin "$ACC.dkr.ecr.$AWS_REGION.amazonaws.com"
   build:
     commands:
-      - echo "Building image $IMAGE"
-      - docker build -f backend/Dockerfile -t "$IMAGE" .
+      - echo Building image $IMAGE
+      # Dockerfile is inside backend/, build context is backend/ too
+      - docker build -t "$IMAGE" ./backend
+      # (equivalently: docker build -f backend/Dockerfile -t "$IMAGE" backend)
   post_build:
     commands:
-      - echo "Pushing $IMAGE"
+      - echo Pushing $IMAGE
       - docker push "$IMAGE"
 
 artifacts:
-  files: []   # no artifacts needed; we push to ECR
+  files: []   # no ZIP artifacts; image is pushed to ECR
