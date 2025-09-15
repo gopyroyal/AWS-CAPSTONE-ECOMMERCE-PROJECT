@@ -1,7 +1,19 @@
+# backend/Dockerfile
 FROM public.ecr.aws/docker/library/node:18-alpine
+
 WORKDIR /app
-COPY backend/package.json /app/
-RUN npm ci --only=production
-COPY backend/ /app/
+
+# copy only metadata first for better layer caching
+COPY backend/package*.json ./
+
+# you don't have a package-lock, so use npm install (not npm ci)
+RUN npm install --omit=dev
+
+# now copy the app
+COPY backend/ .
+
+ENV PORT=8080
 EXPOSE 8080
-CMD ["npm", "start"]
+
+# make sure package.json has:  "scripts": { "start": "node server.js" }
+CMD ["npm","start"]
